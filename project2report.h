@@ -321,7 +321,6 @@ private:
     map<string,unsigned int> ProtoPackets;
 
     template<typename ET,typename IN>void addMac(ET& et, IN inMac){
-        cout << "inMac " << inMac << endl;
         typename ET::iterator it;
         it = et.find(inMac);
         if(it == et.end()){
