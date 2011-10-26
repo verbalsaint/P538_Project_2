@@ -1,0 +1,51 @@
+Creator : Shuohuan Chang
+Date : Oct 17 2011
+P538 Project 2 
+
+First Phase:
+1.(shuohuan)	*Done
+should take a file containing tcpdump data as its input and output the statistics detailed later in this document
+
+2.(shuohuan)    *Done
+Open an input file using function pcap_open_offline().
+
+3.(shuohuan)	*Done
+Check that the data you are provided has been captured from Ethernet using function pcap_datalink().
+
+4.(shuohuan)	*Done
+Read packets from the file using function pcap_loop(). Note that this function needs to be called only once. It takes 4 arguments. Of these, the second and the third arguments are of most interest to you. The second argument lets you specify how many packets to read from the file. The third argument, pcap_handler callback, is where most of the action happens. Here, callback is the function you write to process data from each packet.
+
+5.(shuohuan)	*Done
+You can pass the callback function to the pcap_loop() function simply by giving its name as the appropriate argument to pcap_loop(). The callback function must be a void function that takes three arguments, of the types u_char *, const struct pcap_pkthdr *, const u_char *. The callback is called by pcap_loop() once for each packet. The second argument to the callback is the special libpcap header, which can be used to extract the entire packet length and the packet arrival time (see the pcap_pkthdr structure in /usr/include/pcap.h). The third argument contains the contents of a single packet (from the Ethernet packet header onward).
+
+6.(shuohuan)	*Done
+Close the file using function pcap_close().
+
+
+Second Phase:
+1.(shuohuan)    *Done
+Ethernet, ARP headers
+
+2.(shuohuan)    *Done
+Average, minimum, and maximum packet sizes. Here, packet refers to everything beyond the tcpdump header.
+
+3.(shuohuan)    *Done
+Unique Ethernet addresses found as both sources and destinations, along with the total number of packets containing each address. Represent Ethernet addresses in hex-colon format.
+
+4.(shuohuan)    *Done
+Unique Ethernet addresses found as both sources and destinations, along with the total number of packets containing each address. Represent Ethernet addresses in hex-colon format.
+
+5.(shuohuan)    *Done
+Start date and time, total duration, and total number of packets in the packet capture
+
+6.(shuohuan)    *Done
+Unique source and destination IP addresses, along with the total number of packets containing each address. Represent IPv4 addresses in the standard a.b.c.d notation. **Ignore IPv6 addresses.
+
+7.(shuohuan)    *Done
+Unique ARP participants, their associated MAC addresses, and IP addresses.
+
+8.(shuohuan)    *Done
+Unique source and destination TCP and UDP ports, along with the total number of packets containing each port number.
+
+9.(shuohuan)    *Done
+For TCP, report the number of packets containing each flag.
