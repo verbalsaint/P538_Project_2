@@ -131,7 +131,7 @@ public:
         _data << ShuoHuan << endl;
         _data<< "TCP Flag" << endl;
         _data<< "Flag	#packets" << endl;
-        _data<< LongDash << endl;        
+        _data<< LongDash << endl;
         genData(_TcpFlags);
 
         _data << ShuoHuan << endl;
@@ -354,24 +354,21 @@ public:
     }
     void addProtoMac(uint16_t inProto){
         if(inProto == ETHERTYPE_IP){
-            cout << "IPIP" << endl;
-            addMac(ProtoPackets,string("IP"));            
+            addMac(ProtoPackets,string("IP"));
+            return;
         }
-        else if(inProto == ETHERTYPE_ARP){
-            cout << "ARPARP" << endl;
+        if(inProto == ETHERTYPE_ARP){
             addMac(ProtoPackets,string("ARP"));
-//            return;
+            return;
         }
-        else if(inProto == ETHERTYPE_REVARP){
+        if(inProto == ETHERTYPE_REVARP){
             addMac(ProtoPackets,string("RARP"));
-//            return;
+            return;
         }
-        else{
-            stringstream ss;
-            ss << inProto;
-            cout << "inProto  " << ss.str() << endl;
-            addMac(ProtoPackets,ss.str());
-        }
+        stringstream ss;
+        ss << inProto;
+        cout << "inProto  " << ss.str() << endl;
+        addMac(ProtoPackets,ss.str());
     }
 
     virtual string getData(){
