@@ -257,13 +257,13 @@ private:
     time_t _startDate;
     time_t _endDate;
     time_t _duration;
-    int _anchor;
-    bpf_u_int32 _totalPacket;
+    unsigned int _anchor;
+    bpf_u_int32 _totalPacketLength;
     bpf_u_int32 _maxPacket;
     bpf_u_int32 _minPacket;
-    bpf_u_int32 _avgPacket;
+    double _avgPacket;
 public:
-    PacketHeaderData():_startDate(0),_endDate(0),_duration(0),_anchor(0),_totalPacket(0),_maxPacket(0),_minPacket(0),_avgPacket(0){}
+    PacketHeaderData():_startDate(0),_endDate(0),_duration(0),_anchor(0),_totalPacketLength(0),_maxPacket(0),_minPacket(9999),_avgPacket(0){}
 
     void setDate(time_t secs){
         ++_anchor;
@@ -276,7 +276,7 @@ public:
     }
 
     void setPacket(bpf_u_int32 _packetlen){
-        _totalPacket+=_packetlen;
+        _totalPacketLength+=_packetlen;
         if(_maxPacket < _packetlen)
             _maxPacket = _packetlen;
         if(_minPacket > _packetlen)
@@ -289,7 +289,7 @@ public:
         _data.str("");
         _data << ShuoHuan << endl;
         _data << "Packet capture summary:" << endl;
-        _data << "Capture start date - " << 1900 +StartTime->tm_year << "-" << StartTime->tm_mon << "-" << StartTime->tm_mday << " " << StartTime->tm_hour << ":" << StartTime->tm_min << ":" << StartTime->tm_sec << " " << StartTime->tm_zone << endl;
+        _data << "Capture start date - " << 1900 +StartTime->tm_year << "-" << StartTime->tm_mon + 1<< "-" << StartTime->tm_mday << " " << StartTime->tm_hour << ":" << StartTime->tm_min << ":" << StartTime->tm_sec << " " << StartTime->tm_zone << endl;
         //        cout << "_endDate " << _endDate << endl;
         //        cout << "_endDate - _startDate " << _endDate - _startDate << endl;
         _data << "Capture duration   - " << _endDate - _startDate << " seconds" <<  endl;
@@ -303,7 +303,7 @@ public:
         _data<< "Packet Summary:" << endl;
         _data<< "Minimum Packet Size: " << _minPacket << endl;
         _data<< "Maximum Packet Size: " << _maxPacket << endl;
-        _data<< "Average Packet Size: " << (_avgPacket ? _avgPacket : (_avgPacket = _totalPacket/_anchor)) << endl;
+        _data<< "Average Packet Size: " << (_avgPacket ? _avgPacket : (_avgPacket = (double)_totalPacketLength/_anchor)) << endl;
 
         return _data.str();
     }
@@ -319,7 +319,9 @@ private:
     map<string,unsigned int> SrcMacPackets;
     map<string,unsigned int> DesMacPackets;
     map<string,unsigned int> ProtoPackets;
+
     template<typename ET,typename IN>void addMac(ET& et, IN inMac){
+        cout << "inMac " << inMac << endl;
         typename ET::iterator it;
         it = et.find(inMac);
         if(it == et.end()){
@@ -352,21 +354,24 @@ public:
     }
     void addProtoMac(uint16_t inProto){
         if(inProto == ETHERTYPE_IP){
-            addMac(ProtoPackets,string("IP"));
-            return;
+            cout << "IPIP" << endl;
+            addMac(ProtoPackets,string("IP"));            
         }
-        if(inProto == ETHERTYPE_ARP){
+        else if(inProto == ETHERTYPE_ARP){
+            cout << "ARPARP" << endl;
             addMac(ProtoPackets,string("ARP"));
-            return;
+//            return;
         }
-        if(inProto == ETHERTYPE_REVARP){
+        else if(inProto == ETHERTYPE_REVARP){
             addMac(ProtoPackets,string("RARP"));
-            return;
+//            return;
         }
-        stringstream ss;
-        ss << inProto;
-        cout << "SHIH" << ss.str() << endl;
-        addMac(ProtoPackets,ss.str());
+        else{
+            stringstream ss;
+            ss << inProto;
+            cout << "inProto  " << ss.str() << endl;
+            addMac(ProtoPackets,ss.str());
+        }
     }
 
     virtual string getData(){

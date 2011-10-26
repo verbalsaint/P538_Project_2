@@ -39,16 +39,16 @@ class CallBack{
         struct ether_header* EtherHeader = (struct ether_header*)(packet);
         uint16_t frameType = ntohs(EtherHeader->ether_type);
         if(frameType != ETHERTYPE_IP) return;
-        struct iphdr* IpHeader = (struct iphdr*)(packet + ETH_HLEN);       
+        struct iphdr* IpHeader = (struct iphdr*)(packet + ETH_HLEN);
         uint16_t protocolType = IpHeader->protocol;
-        if(protocolType == IPPROTO_TCP){            
-//            u_int16_t fin:1;
-//            u_int16_t syn:1;
-//            u_int16_t rst:1;
-//            u_int16_t psh:1;
-//            u_int16_t ack:1;
-//            u_int16_t urg:1;
-            struct tcphdr* TcpHeader =(struct tcphdr*)(packet + ETH_HLEN+ IpHeader->ihl);
+        if(protocolType == IPPROTO_TCP){
+            //            u_int16_t fin:1;
+            //            u_int16_t syn:1;
+            //            u_int16_t rst:1;
+            //            u_int16_t psh:1;
+            //            u_int16_t ack:1;
+            //            u_int16_t urg:1;
+            struct tcphdr* TcpHeader =(struct tcphdr*)(packet + ETH_HLEN + ((unsigned int)(IpHeader->ihl) << 2));
             if(TcpHeader->urg)reportObj->vsTcpUdpData.setTcpFlag("URG");
             if(TcpHeader->ack)reportObj->vsTcpUdpData.setTcpFlag("ACK");
             if(TcpHeader->psh)reportObj->vsTcpUdpData.setTcpFlag("PSH");
@@ -60,7 +60,7 @@ class CallBack{
         }
 
         if(protocolType == IPPROTO_UDP){
-            struct udphdr* UdpHeader =(struct udphdr*)(packet + ETH_HLEN+ IpHeader->ihl);
+            struct udphdr* UdpHeader =(struct udphdr*)(packet + ETH_HLEN+ ((IpHeader->ihl) << 2));
             reportObj->vsTcpUdpData.setUdpSrcPort(ntohs(UdpHeader->source));
             reportObj->vsTcpUdpData.setUdpDestPort(ntohs(UdpHeader->dest));
         }
@@ -111,6 +111,7 @@ class CallBack{
         reportObj->etherData.addSrcMac(ether_ntoa(&host));
         uint16_t frameType = ntohs(EtherHeader->ether_type);
         reportObj->etherData.addProtoMac(frameType);
+//        reportObj->etherData.addProtoMac(EtherHeader->ether_type);
     }
 
     /**
