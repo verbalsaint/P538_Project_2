@@ -29,7 +29,8 @@ int main()
     cout << "Check with pcap_datalink for file " << P2Files().cFile_Wget << " : " << PcapWget.checkPcap_datalink() << endl;
 
     // and \\tcp or \\udp
-    PcapWget.compile("arp or ip or tcp or udp");
+//    PcapWget.compile("arp or ip or tcp or udp");
+    PcapWget.compile("");
     PcapWget.Start();
 
     //------------
@@ -37,7 +38,7 @@ int main()
     cout << "Check with pcap_datalink for file " << P2Files().cFile_Tracerout << " : " << PcapTracerout.checkPcap_datalink() << endl;
 
     // and \\tcp or \\udp
-    PcapTracerout.compile("arp or ip or tcp or udp");
+    PcapTracerout.compile("");
     PcapTracerout.Start();
 
     //------------
@@ -46,7 +47,7 @@ int main()
 
 
     // and \\tcp or \\udp
-    PcapDhcp.compile("arp or ip or tcp or udp");
+    PcapDhcp.compile("");
     PcapDhcp.Start();
     //------------
     return 0;

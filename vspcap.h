@@ -59,6 +59,7 @@ public:
     //3. ether proto arp
     //4. ether proto tcp
     int compile(string cpstring/* pcap-filter */){
+        if(checkPcap_datalink() !=1) throw VSGeneralExcaption("It's not ethernet!");
         if(!check()) return -1;
         struct bpf_program bpf;
         bpf_u_int32 netmask = 0xFFFFFFFF;

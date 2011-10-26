@@ -366,7 +366,7 @@ public:
         }
         stringstream ss;
         ss << inProto;
-        cout << "inProto  " << ss.str() << endl;
+        //cout << "inProto  " << ss.str() << endl;
         addMac(ProtoPackets,ss.str());
     }
 
