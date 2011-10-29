@@ -28,7 +28,8 @@ HEADERS += \
     vsgeneralexception.h \
     callbackfunc.h \
     project2report.h \
-    p538project2.h
+    p538project2.h \
+    dhcp.h
 
 LIBS -= -lQtGui -lQtCore -lpthread
 LIBS += -lpcap

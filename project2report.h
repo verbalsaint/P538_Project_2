@@ -27,36 +27,265 @@ public:
 };
 
 //-----Code below-----
-class DHCPData : public IRoll{
+class DHCPData : public IRoll
+{
 private:
     stringstream _data;
+    map<string,unsigned int> ClientMacIDs;
+    map<string,unsigned int> ServerIPs;
+    map<string ,unsigned int> DHCPFlags;
+
+    template<typename ET,typename IN>void addData(ET& et, IN inMac)
+    {
+        typename ET::iterator it;
+        it = et.find(inMac);
+        if(it == et.end()){
+            et[inMac] = 1;
+        }
+        else{
+            et[inMac] = ++et[inMac];
+        }
+    }
+
+    template<int SD,typename ET>void genData(ET& et)
+    {
+        typename ET::iterator it;
+        if(SD == 0)
+        {/*dynamic*/
+            for ( it=et.begin() ; it != et.end(); ++it )
+                _data << (*it).first << (((*it).first.length() < 16) ? getDilimiter(2) : getDilimiter(1)) << (*it).second << endl;
+        }
+        else
+        {
+            string DILIMITER = getDilimiter(SD);
+            for ( it=et.begin() ; it != et.end(); ++it )
+                _data << (*it).first << DILIMITER << (*it).second << endl;
+        }
+    }
+
 public:
-    virtual string getData(){
+    void addClientMacIDs(string inMac)
+    {
+        addData(ClientMacIDs,inMac);
+    }
+    void addServerIp(string inMac)
+    {
+        addData(ServerIPs,inMac);
+    }
+
+    void addFlags(string flag)
+    {
+        addData(DHCPFlags,flag);
+    }
+
+    virtual string getData()
+    {
+        _data << "*****Sachin*****" << endl;
+        _data << "DHCP Clients" << endl;
+        _data << "MAC Address		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(ClientMacIDs);
+        _data << endl;
+        _data << "DHCP Servers" << endl;
+        _data << "IP Address		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(ServerIPs);
+        _data << endl;
+        _data << "DHCP message types	Message	Count" << endl;
+        _data << LongDash << endl;
+        genData<0>(DHCPFlags);
+        _data << endl;
         return _data.str();
     }
 };
 
-class UDPData : public IRoll{
+class UDPData : public IRoll
+{
+
 private:
+
     stringstream _data;
+    map<unsigned int,unsigned int> SrcPorts;
+    map<unsigned int,unsigned int> DesPorts;
+
+    template<typename ET,typename IN>void addData(ET& et, IN inMac)
+    {
+        typename ET::iterator it;
+        it = et.find(inMac);
+        if(it == et.end()){
+            et[inMac] = 1;
+        }
+        else{
+            et[inMac] = ++et[inMac];
+        }
+    }
+
+    template<int SD,typename ET>void genData(ET& et)
+    {
+        typename ET::iterator it;
+        if(SD == 0)
+        {/*dynamic*/
+            for ( it=et.begin() ; it != et.end(); ++it )
+                _data << (*it).first << getDilimiter(2)  << (*it).second << endl;
+        }
+        else
+        {
+            string DILIMITER = getDilimiter(SD);
+            for ( it=et.begin() ; it != et.end(); ++it )
+                _data << (*it).first << DILIMITER << (*it).second << endl;
+        }
+    }
+
 public:
-    virtual string getData(){
+
+    //checksum data
+    int nUnused ;
+    int nCorrrectCC ;
+    int nInCorrectCC ;
+
+    //constructor
+    UDPData()
+    {
+        nUnused = 0 ;
+        nCorrrectCC = 0 ;
+        nInCorrectCC = 0 ;
+    }
+
+    void addSrcPort(uint16_t srcPort)
+    {
+        addData(SrcPorts,srcPort);
+    }
+    void addDesPort(uint16_t desPort)
+    {
+        addData(DesPorts,desPort);
+    }
+
+    virtual string getData()
+    {
+        _data << "*****Sachin*****" << endl;
+        _data << "UDP source ports" << endl;
+        _data << "Source		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(SrcPorts);
+        _data << endl;
+        _data << "UDP destination ports" << endl;
+        _data << "Destination		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(DesPorts);
+        _data << endl;
+        _data <<"UDP checksum Summary: "<< endl ;
+        _data <<"Omit checksum: " ;
+        _data <<nUnused ;
+        _data << endl;
+        _data <<"Incorrect checksum: " ;
+        _data <<nInCorrectCC ;
+        _data << endl;
+        _data <<"Correct checksum: " ;
+        _data <<nCorrrectCC ;
+        _data << endl;
+
+        return _data.str();
+    }
+
+};
+
+
+
+class TCPData : public IRoll
+{
+
+private:
+
+    stringstream _data;
+    map<unsigned int,unsigned int> SrcPorts;
+    map<unsigned int,unsigned int> DesPorts;
+    map<string ,unsigned int> TCPFlags;
+    map<string ,unsigned int> TLProtocols;
+
+    template<typename ET,typename IN>void addData(ET& et, IN inMac)
+    {
+        typename ET::iterator it;
+        it = et.find(inMac);
+        if(it == et.end()){
+            et[inMac] = 1;
+        }
+        else{
+            et[inMac] = ++et[inMac];
+        }
+    }
+
+    template<int SD,typename ET>void genData(ET& et)
+    {
+        typename ET::iterator it;
+        if(SD == 0)
+        {/*dynamic*/
+            for ( it=et.begin() ; it != et.end(); ++it )
+                _data << (*it).first << getDilimiter(2)  << (*it).second << endl;
+        }
+        else
+        {
+            string DILIMITER = getDilimiter(SD);
+            for ( it=et.begin() ; it != et.end(); ++it )
+                _data << (*it).first << DILIMITER << (*it).second << endl;
+        }
+    }
+
+public:
+    void addSrcPort(uint16_t srcPort)
+    {
+        addData(SrcPorts,srcPort);
+    }
+    void addDesPort(uint16_t desPort)
+    {
+        addData(DesPorts,desPort);
+    }
+
+    void addFlags(string flag)
+    {
+        addData(TCPFlags,flag);
+    }
+
+    void addTLProtocols(string inProto)
+    {
+        addData(TLProtocols,inProto);
+    }
+
+    virtual string getData()
+    {
+
+        _data << "*****Sachin*****" << endl;
+        _data << "Transport Layer Protocol Summary" << endl;
+        _data << "Protocol		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(TLProtocols);
+        _data << endl;
+        _data << "TCP Flags" << endl;
+        _data << "Flag	#packets" << endl;
+        _data << LongDash << endl;
+        genData<2>(TCPFlags);
+        _data << endl;
+        _data << "TCP source ports" << endl;
+        _data << "Source		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(SrcPorts);
+        _data << endl;
+        _data << "TCP destination ports" << endl;
+        _data << "Destination		#packets" << endl;
+        _data << LongDash << endl;
+        genData<0>(DesPorts);
+        _data << endl;
+
         return _data.str();
     }
 };
 
-class TCPData : public IRoll{
-private:
-    stringstream _data;
-public:
-    virtual string getData(){
-        return _data.str();
-    }
-};
 
 
 //------Below is DONE------
-
+/**
+  * ARP Data Collection
+  * ShuoHuan
+  */
 class VSTCP_UDPData : public IRoll{
 private:
     stringstream _data;
